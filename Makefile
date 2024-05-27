@@ -6,7 +6,9 @@ RM = rm -rf
 SRC = main.c
 OBJ = $(SRC:.c=.o)
 
-all: $(OBJ)
+all: $(NAME)
+
+$(NAME): $(OBJ)
 	$(CC) $(FLAGS) $(OBJ) -o $(NAME)
 
 clean:
