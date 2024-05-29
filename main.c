@@ -6,21 +6,18 @@
 /*   By: msamilog <tahasamiloglu@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 00:47:48 by msamilog          #+#    #+#             */
-/*   Updated: 2024/05/27 16:51:16 by msamilog         ###   ########.fr       */
+/*   Updated: 2024/05/29 21:52:24 by msamilog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	init_data(t_data *data, int ac, char **av)
+time_t	get_time(void)
 {
-	data->size = ft_atoi(av[1]);
-	data->time_to_die = ft_atoi(av[2]);
-	data->time_to_eat = ft_atoi(av[3]);
-	data->time_to_sleep = ft_atoi(av[4]);
-	data->num_of_must_eat = 0;
-	if (ac == 6)
-		data->num_of_must_eat = ft_atoi(av[5]);
+	struct timeval	t;
+
+	gettimeofday(&t, NULL);
+	return (t.tv_sec * 1000 + t.tv_usec / 1000);
 }
 
 int	ft_atoi(char *str)
@@ -47,6 +44,33 @@ int	ft_atoi(char *str)
 	return ((int)result);
 }
 
+void	init_data(t_data *data, int ac, char **av)
+{
+	int	i;
+
+	data->size = ft_atoi(av[1]);
+	data->time_to_die = ft_atoi(av[2]);
+	data->time_to_eat = ft_atoi(av[3]);
+	data->time_to_sleep = ft_atoi(av[4]);
+	data->start_time = get_time();
+	data->num_of_must_eat = 0;
+	data->sim_end = 0;
+	if (ac == 6)
+		data->num_of_must_eat = ft_atoi(av[5]);
+	pthread_mutex_init(&data->check_dead, NULL);
+	data->philos = malloc(sizeof(t_philo) * data->size);
+	i = 0;
+	while (i < data->size)
+	{
+		data->philos[i].id = i + 1;
+		data->philos[i].meal_count = 0;
+		data->philos[i].last_meal = data->start_time;
+		pthread_mutex_init(&data->philos[i].fork, NULL);
+		data->philos[i].data = data;
+		i++;
+	}
+}
+
 int	args_valid(int ac, char **av)
 {
 	if (ac == 5 || ac == 6)
@@ -63,13 +87,11 @@ int	args_valid(int ac, char **av)
 
 int	main(int ac, char **av)
 {
-	t_philo	philo;
 	t_data	data;
 
 	if (!args_valid(ac, av))
 		return (1);
 	init_data(&data, ac, av);
-	printf("size: %d\ntime_to_die: %li\ntime_to_eat: %li\ntime_to_sleep: %li\nnum_of_must_eat: %d\n",
-		data.size, data.time_to_die, data.time_to_eat, data.time_to_sleep, data.num_of_must_eat);
+	create_threads(&data);
 	return (0);
 }

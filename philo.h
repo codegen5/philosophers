@@ -6,7 +6,7 @@
 /*   By: msamilog <tahasamiloglu@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 00:41:27 by msamilog          #+#    #+#             */
-/*   Updated: 2024/05/27 16:49:53 by msamilog         ###   ########.fr       */
+/*   Updated: 2024/05/29 21:45:47 by msamilog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,22 @@ typedef struct s_philo
 	int				meal_count;
 	time_t			last_meal;
 	pthread_t		thread;
-	pthread_mutex_t	*forks;
+	pthread_mutex_t	fork;
+	struct s_data	*data;
 }		t_philo;
 
 typedef struct s_data
 {
-	int		size;
-	time_t	time_to_die;
-	time_t	time_to_eat;
-	time_t	time_to_sleep;
-	int		num_of_must_eat;
+	int				size;
+	time_t			time_to_die;
+	time_t			time_to_eat;
+	time_t			time_to_sleep;
+	time_t			start_time;
+	int				num_of_must_eat;
+	int				sim_end;
+	int				death_printed;
+	t_philo			*philos;
+	pthread_mutex_t	check_dead;
 }				t_data;
-
-int	ft_atoi(char *str);
 
 #endif
