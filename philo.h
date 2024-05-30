@@ -6,7 +6,7 @@
 /*   By: msamilog <tahasamiloglu@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 00:41:27 by msamilog          #+#    #+#             */
-/*   Updated: 2024/05/29 21:45:47 by msamilog         ###   ########.fr       */
+/*   Updated: 2024/05/30 20:50:36 by msamilog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,10 @@ typedef struct s_data
 	time_t			start_time;
 	int				num_of_must_eat;
 	int				sim_end;
-	int				death_printed;
-	t_philo			*philos;
-	pthread_mutex_t	check_dead;
+	t_philo			*philo;
+	pthread_mutex_t	death;
+	pthread_mutex_t	last;
+	pthread_mutex_t	total;
 }				t_data;
 
 #endif
