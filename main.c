@@ -6,7 +6,7 @@
 /*   By: msamilog <tahasamiloglu@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 00:47:48 by msamilog          #+#    #+#             */
-/*   Updated: 2024/05/30 21:06:49 by msamilog         ###   ########.fr       */
+/*   Updated: 2024/05/31 17:19:44 by msamilog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	init_data(t_data *data, int ac, char **av)
 	data->time_to_eat = ft_atoi(av[3]);
 	data->time_to_sleep = ft_atoi(av[4]);
 	data->start_time = get_time();
-	data->num_of_must_eat = 0;
+	data->num_of_must_eat = -1;
 	data->sim_end = 0;
 	if (ac == 6)
 		data->num_of_must_eat = ft_atoi(av[5]);
@@ -155,7 +155,7 @@ int	ft_philo_eat(t_philo *philo)
 	pthread_mutex_lock(&data->last);
 	philo->last_meal = get_time();
 	pthread_mutex_unlock(&data->last);
-	ft_wait(data->time_to_die);
+	ft_wait(data->time_to_eat);
 	pthread_mutex_lock(&data->total);
 	philo->meal_count++;
 	pthread_mutex_unlock(&data->total);
@@ -208,15 +208,25 @@ int	is_dead(t_philo *philo)
 
 int	is_served(t_philo *philo)
 {
-	if (philo->data->num_of_must_eat)
+	t_data	*data;
+	int		i;
+
+	data = philo->data;
+	if (data->num_of_must_eat != -1)
 	{
-		pthread_mutex_lock(&philo->data->total);
-		if (philo->meal_count == philo->data->num_of_must_eat)
+		i = 0;
+		while (i < data->size)
 		{
-			pthread_mutex_unlock(&philo->data->total);
-			return (1);
+			pthread_mutex_lock(&data->total);
+			if (data->philo[i].meal_count < data->num_of_must_eat)
+			{
+				pthread_mutex_unlock(&data->total);
+				return (0);
+			}
+			pthread_mutex_unlock(&data->total);
+			i++;
 		}
-		pthread_mutex_unlock(&philo->data->total);
+		return (1);
 	}
 	return (0);
 }
@@ -230,6 +240,7 @@ int	check_simulation(t_data *data)
 	{
 		if (is_dead(&data->philo[i]) || is_served(&data->philo[i]))
 			return (1);
+		i++;
 	}
 	return (0);
 }
@@ -252,6 +263,7 @@ void	create_threads(t_data *data)
 	{
 		if (check_simulation(data))
 			break ;
+		usleep(100);
 	}
 	i = 0;
 	while (i < data->size)
