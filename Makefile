@@ -1,9 +1,9 @@
 NAME = philo
 CC = gcc
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -pthread
 RM = rm -rf
 
-SRC = main.c
+SRC = main.c thread.c philo.c utils.c
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)

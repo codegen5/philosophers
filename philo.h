@@ -6,7 +6,7 @@
 /*   By: msamilog <tahasamiloglu@gmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 00:41:27 by msamilog          #+#    #+#             */
-/*   Updated: 2024/05/30 20:50:36 by msamilog         ###   ########.fr       */
+/*   Updated: 2024/06/01 14:08:07 by msamilog         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <unistd.h>
 # include <pthread.h>
 # include <sys/time.h>
-# include <string.h>
 
 typedef struct s_philo
 {
@@ -44,5 +43,14 @@ typedef struct s_data
 	pthread_mutex_t	last;
 	pthread_mutex_t	total;
 }				t_data;
+
+int		ft_atoi(char *str);
+int		ft_strcmp(char *s1, char *s2);
+time_t	get_time(void);
+void	ft_free(t_data *data);
+void	create_threads(t_data *data);
+int		philo_eat(t_philo *philo);
+void	philo_sleep(t_philo *philo);
+void	philo_print(t_philo *philo, char *status);
 
 #endif
